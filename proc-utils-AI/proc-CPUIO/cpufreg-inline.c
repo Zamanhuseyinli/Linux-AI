@@ -130,5 +130,5 @@ module_init(cpufreq_inline_init);
 module_exit(cpufreq_inline_exit);
 
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Polat Alemdar AI");
-MODULE_DESCRIPTION("AI destekli CPU frekans yöneticisi");
+MODULE_AUTHOR("Zaman Huseyinli");
+MODULE_DESCRIPTION("AI-powered CPU frequency manager");
