@@ -5,7 +5,7 @@ import sys
 
 def main():
     # 🔧 Dizin oluşturma kısmı
-    ai_logs_dir = os.path.expanduser(".ai_logs")
+    ai_logs_dir = os.path.expanduser("~/.ai_logs")
     if not os.path.exists(ai_logs_dir):
         os.makedirs(ai_logs_dir)
         print(f"[+] Directory created: {ai_logs_dir}")

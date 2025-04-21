@@ -236,7 +236,7 @@ def auto_prop_manage(processes, permission=False):
                 continue
     return actions
 def ensure_log_directory():
-    log_dir = os.path.expanduser(".ai_logs")
+    log_dir = os.path.expanduser("~/.ai_logs")
     os.makedirs(log_dir, exist_ok=True)
     return os.path.join(log_dir, "ai_suggestions.log")
 
