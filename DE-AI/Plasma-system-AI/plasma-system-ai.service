@@ -1,0 +1,14 @@
+[Unit]
+Description=Plasma System AI Service
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/plasma-start
+WorkingDirectory=%h/.local/share/plasma-system-ai
+Restart=on-failure
+User=%u
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=default.target

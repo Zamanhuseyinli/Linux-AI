@@ -19,9 +19,18 @@ Due to certain limitations in device support, this project does **not** provide 
 
 I currently offer support for Intel, AMD, and other integrated GPU and CPU components.
 
+
+
 ---
 
 > ⚠️ **Warning:**  
 > This is an experimental prototype.  
 > It is **highly recommended** to install and test it in a virtual machine first.  
 > Errors or unexpected behavior may occur on physical devices.
+
+## ** DE-AI**
+DE-AI is an artificial intelligence system management structure that adapts to desktop environments developed for desktop environments. In this structure, desktop environment ai version variations have emerged.The above mentioned things are only valid for those who want to build the AI ​​system structure directly on the kernel.
+
+
+
+

@@ -1,0 +1,22 @@
+[2025-04-22 01:36:18.276883] Suggestion: 🔥 Overheating detected. Thermal check is recommended.
+🏷 Most Intensive Process:
+🔧 Name: brave | PID: 6627
+🧠 CPU: 0.0% | 🗂 RAM: 7.06%
+📊 Weighted Score: 2.12
+- 🟡 'systemd' is using very low resources. Consider closing if idle.
+- 🟡 'kthreadd' is using very low resources. Consider closing if idle.
+- 🟡 'pool_workqueue_release' is using very low resources. Consider closing if idle.
+- 🟡 'kworker/R-kvfree_rcu_reclaim' is using very low resources. Consider closing if idle.
+- 🟡 'kworker/R-rcu_gp' is using very low resources. Consider closing if idle.
+- 🟡 'kworker/R-sync_wq' is using very low resources. Consider closing if idle.
+- 🟡 'kworker/R-slub_flushwq' is using very low resources. Consider closing if idle.
+- 🟡 'kworker/R-netns' is using very low resources. Consider closing if idle.
+- 🟡 'kworker/0:0H-events_highpri' is using very low resources. Consider closing if idle.
+- 🟡 'kworker/R-mm_percpu_wq' is using very low resources. Consider closing if idle.
+
+[2025-04-22 01:56:18.550264] Suggestion: ✅ System stable. Everything looks good.
+🏷 Most Intensive Process:
+🔧 Name: brave | PID: 6627
+🧠 CPU: 18.8% | 🗂 RAM: 7.35%
+📊 Weighted Score: 15.37
+
