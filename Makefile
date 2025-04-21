@@ -29,19 +29,20 @@ KERNEL_OBJS = $(KERNEL_SRC)/kernel-start.c
 # Targets
 all: $(BIN_DIR) $(BIN_DIR)/cpu_tools $(BIN_DIR)/gpu_tools $(BIN_DIR)/kernel_mod
 
-$(BIN_DIR):
+$(BIN_DIR):	
 	mkdir -p $(BIN_DIR)
 
-$(BIN_DIR)/cpu_tools: $(CPU_OBJS)
+$(BIN_DIR)/cpu_tools: $(CPU_OBJS)	
 	$(CC) $(CFLAGS) -o $@ $^ $(KERNEL_INCLUDE)
 
-$(BIN_DIR)/gpu_tools: $(GPU_OBJS)
+$(BIN_DIR)/gpu_tools: $(GPU_OBJS)	
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-$(BIN_DIR)/kernel_mod: $(KERNEL_OBJS)
+$(BIN_DIR)/kernel_mod: $(KERNEL_OBJS)	
 	$(CC) $(CFLAGS) -o $@ $^ $(KERNEL_INCLUDE)
 
-clean:
+
+clean:	
 	rm -rf $(BIN_DIR)
 
-.PHONY: all clean
+.PHONY: all clean nconfig
