@@ -1,0 +1,2 @@
+[console_scripts]
+plasma-start = plasma_system_ai.plasma_start:main
