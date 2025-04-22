@@ -7,7 +7,7 @@ long_description = (here / "README.md").read_text(encoding="utf-8")
 
 setup(
     name='Plasma-AI',
-    version='1.0.0',
+    version='1.0.1',
     author='Zaman Huseyinli',
     author_email='admin@azccriminal.space',
     description='DE-AI: An intelligent Linux desktop AI system that manages and optimizes your environment.',

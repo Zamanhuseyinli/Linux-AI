@@ -36,7 +36,9 @@ def save_metrics_to_file(metrics, filename="~/.ai_logs/system_metrics.json"):
     full_path = os.path.expanduser(filename)
     directory = os.path.dirname(full_path)
     os.makedirs(directory, exist_ok=True)
-    with open(full_path, "a") as f:
+    
+    # Write only once by opening the file in write mode ("w") instead of append mode ("a")
+    with open(full_path, "w") as f:  # Change mode to "w" for writing once
         f.write(json.dumps(metrics) + "\n")
 
 # Main function with duration and delay
@@ -51,17 +53,10 @@ def main():
         print(f"[INFO] Waiting {args.delay} seconds before starting...")
         time.sleep(args.delay)
 
-    start_time = time.time()
-    while True:
-        current_time = time.time()
-        if current_time - start_time >= args.duration:
-            print("[INFO] Logging finished.")
-            break
-
-        data = collect_system_metrics()
-        save_metrics_to_file(data)
-        print(f"[+] Logged: {data['timestamp']} | CPU: {data['cpu_percent']}% | RAM: {data['virtual_memory']['percent']}%")
-        time.sleep(5)
+    # Collect and save metrics only once
+    data = collect_system_metrics()
+    save_metrics_to_file(data)
+    print(f"[+] Logged: {data['timestamp']} | CPU: {data['cpu_percent']}% | RAM: {data['virtual_memory']['percent']}%")
 
 if __name__ == "__main__":
     main()

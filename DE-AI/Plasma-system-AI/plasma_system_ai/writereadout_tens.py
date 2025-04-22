@@ -1,3 +1,4 @@
+import logging
 import time
 import json
 import tensorflow as tf
@@ -126,6 +127,11 @@ def suggest_app_actions(process_info):
             suggestions.append(f"🔴 '{name}' is using high resources. Monitor or restart if unnecessary.")
     return suggestions
 
+def ensure_log_directory():
+    log_dir = os.path.expanduser("~/.ai_logs")
+    os.makedirs(log_dir, exist_ok=True)
+    return os.path.join(log_dir, "ai_suggestions.log")
+
 
 def get_metrics_file_path():
     return os.path.expanduser("~/.ai_logs/system_metrics.json")
@@ -194,27 +200,49 @@ def most_intensive_process(processes):
         f"🧠 CPU: {top['cpu_percent']}% | 🗂 RAM: {top['memory_percent']:.2f}%\n"
         f"📊 Weighted Score: {score(top):.2f}"
     )
-def get_interval_from_user(args=None):
+def get_interval_from_args(args):
     """
-    Returns interval in seconds, either from command-line args or interactive prompt.
+    Returns interval in seconds from command-line args.
     Args:
-        args: Parsed argparse.Namespace object (optional)
+        args: Parsed argparse.Namespace object
     Returns:
         int: Interval in seconds
     """
-    # Önce komut satırı argümanlarını kontrol et
-    if args and args.get_interval and args.tens_interval:
-        unit = args.get_interval.strip().lower()
-        try:
-            amount = int(args.tens_interval)
-            if amount <= 0:
-                raise ValueError
-            print(f"⏱ Using interval from args: {amount}{unit}")
-            return amount * 60 if unit == "m" else amount
-        except ValueError:
-            print("⚠️  Invalid interval provided in args. Falling back to manual input.")
+    if args:
+        # If both interval and get_interval are provided
+        if args.get_interval and args.interval:
+            unit = args.get_interval.strip().lower()  # unit is "s" or "m"
+            try:
+                amount = int(args.interval)  # The value for the interval
+                if amount <= 0:
+                    raise ValueError  # Ensure the interval amount is positive
+                print(f"⏱ Using interval from args: {amount}{unit}")
 
-    # Komut satırı yoksa kullanıcıdan iste
+                # Convert to minutes if "m", otherwise keep it in seconds
+                if unit == "m":
+                    return amount * 60  # Convert minutes to seconds
+                elif unit == "s":
+                    return amount  # Keep as seconds
+                else:
+                    print("⚠  Invalid unit for interval. Only 's' or 'm' are allowed.")
+                    return None
+            except ValueError:
+                print("⚠  Invalid interval value provided. Falling back to manual input.")
+
+        # Handle if only the interval is provided directly
+        elif args.interval:
+            return int(args.interval)  # Just return the interval in seconds
+
+    # Default behavior: If no valid interval is found, return None
+    return None
+
+
+def get_interval_from_user():
+    """
+    Returns interval in seconds from user input interactively.
+    Returns:
+        int: Interval in seconds
+    """
     while True:
         print("⏱ Set the monitoring interval.")
         unit = input("Choose time unit ([s]econds / [m]inutes): ").strip().lower()
@@ -233,39 +261,102 @@ def get_interval_from_user(args=None):
         return amount * 60 if unit == "m" else amount
 
 
-def get_user_permission():
-    answer = input("⚙️ Enable Auto-Prop (automatic process management)? [y/N]: ").strip().lower()
-    return answer == 'y'
-def auto_prop_manage(processes, permission=False):
+def get_interval(args=None):
+    """
+    Returns interval in seconds, either from command-line args or interactive prompt.
+    Args:
+        args: Parsed argparse.Namespace object (optional)
+    Returns:
+        int: Interval in seconds
+    """
+    # İlk önce komut satırından almayı dene
+    interval = get_interval_from_args(args)
+    
+    # Eğer komut satırından alınamadıysa, kullanıcıdan manuel giriş al
+    if interval is None:
+        interval = get_interval_from_user()
+    
+    return interval
+
+
+def get_user_permission(auto_prop):
+    """
+    Bu fonksiyon, Auto-Prop'un etkin olup olmadığını kontrol eder.
+    Eğer --auto-prop varsa, doğrudan izin verilir ve kullanıcıya sorulmaz.
+    """
+    if auto_prop is not None:
+        return auto_prop
+    return False  # If no flag is set, return False by default
+
+def list_processes():
+    """
+    Bu fonksiyon, aktif tüm süreçlerin pid, isim, cpu ve hafıza kullanımını döndüren bir liste oluşturur.
+    """
+    processes = []
+    for proc in psutil.process_iter(['pid', 'name', 'cpu_percent', 'memory_percent']):
+        processes.append(proc.info)  # Process bilgilerini listeye ekleyin
+    return processes
+
+def auto_prop_manage(processes, permission=True):
     if not permission:
         return []
 
     actions = []
+
+    # List of critical processes that should not be terminated
+    critical_processes = [
+        "plasma-start",  # Critical Plasma process
+        "systemd", 
+        "gnome", 
+        "plasmashell", 
+        "Xorg", 
+        "kde", 
+        "pulseaudio",
+        "python3.12"  # Critical Python 3.12 processes should not be terminated
+    ]
+    
     for proc in processes:
         pid = proc['pid']
         name = proc['name']
         cpu = proc['cpu_percent']
         mem = proc['memory_percent']
 
+        # Skip termination of critical processes
+        if any(critical_name in name.lower() for critical_name in critical_processes):
+            actions.append(f"✅ Auto-Prop: Skipping termination for critical process '{name}' (PID: {pid})")
+            continue  # Skip this process
+
         if cpu > 70 or mem > 30:
             try:
-                # Uygulama sistem uygulaması değilse ve zararsızsa sonlandır
-                if not name.lower().startswith(("systemd", "gnome", "plasmashell", "Xorg", "kde", "pulseaudio")):
-                    psutil.Process(pid).terminate()
-                    actions.append(f"❌ Auto-Prop: Terminated high-load process '{name}' (PID: {pid})")
-            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                # If it's not a system-critical process, terminate it
+                psutil.Process(pid).terminate()
+                actions.append(f"❌ Auto-Prop: Terminated high-load process '{name}' (PID: {pid})")
+            except (psutil.NoSuchProcess, psutil.AccessDenied) as e:
+                # Log the error and continue instead of crashing
+                log_path = ensure_log_directory()
+                logging.basicConfig(filename=log_path, level=logging.ERROR)
+                logging.error(f"Error while trying to terminate process {name} (PID: {pid}): {e}")
                 continue
+
     return actions
-def ensure_log_directory():
-    log_dir = os.path.expanduser("~/.ai_logs")
-    os.makedirs(log_dir, exist_ok=True)
-    return os.path.join(log_dir, "ai_suggestions.log")
+
+# Ensure that logging is configured
+log_path = ensure_log_directory()
+logging.basicConfig(filename=log_path, level=logging.INFO)
+
+# Example usage:
+processes = list_processes()  # All processes are fetched dynamically
+permission = get_user_permission(None)  # Example where permission is determined by some other factor
+actions = auto_prop_manage(processes, permission)
+
+if actions:
+    for action in actions:
+        logging.info(action)
 
 
-def run_monitor_loop():
-    interval = get_interval_from_user()
-    permission = get_user_permission()
-
+def run_monitor_loop(args):
+    interval = get_interval(args)
+    permission = get_user_permission(auto_prop=True) 
     log_path = ensure_log_directory()
     metrics_path = get_metrics_file_path()
 
