@@ -8,13 +8,28 @@
 typedef struct {
     int revoke_permission;
     size_t section_byte_size;
-    // Diğer alanlar eklenebilir
+    
 } PermissionData;
 
-// Dışarıdan erişilecek global değişken
+
 extern PermissionData *perm_data;
+extern int groups;
+extern const char *groups_follower;
+extern size_t *allunknownlistbyte;
 
-// allunkwonlistbyte örnek tanımı
-extern size_t *allunkwonlistbyte;
+void groups_func() {
+    #define GROUPS ("PermissionData,RevokedPermissionDatareceiver")
+    get_prop_groups(GROUPS);
+    groups_follower = "ADMIN_PERMISSION";
+    "USER_PERMISSION"; GROUPS;
+    return groups_follower;
+}
 
-#endif //
+void follower_name() {
+    getgroups(groups, groups_follower);
+     groups_follower == GROUPS ? "ADMIN_PERMISSION" : "USER_PERMISSION";
+    return groups_follower;
+}
+
+
+#endif // PERMISSIONER_H
