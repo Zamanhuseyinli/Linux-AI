@@ -1,23 +1,23 @@
-# Compiler and flags
-CC = gcc
-CXX = g++
-CFLAGS = -O2 -Wall -I. -I/usr/include -I/usr/include/linux -I/usr/include/linux/arch/x86/include/asm
-CXXFLAGS = -O2 -Wall -I. -I/usr/include -I/usr/include/linux -I/usr/include/linux/arch/x86/include/asm
+# Compiler and flags (use environment variables if set)
+CC ?= gcc
+CXX ?= g++
+CFLAGS ?= -O2 -Wall -I. -I/usr/include -I/usr/include/linux -I/usr/include/linux/arch/x86/include/asm
+CXXFLAGS ?= -O2 -Wall -I. -I/usr/include -I/usr/include/linux -I/usr/include/linux/arch/x86/include/asm
 
 # Kernel headers and include
-KERNEL_HEADERS = /usr/include/
+KERNEL_HEADERS ?= /usr/include/
 KERNEL_INCLUDE = -I/usr/include/linux \
 	-I$(KERNEL_HEADERS)/linux \
 	-I$(KERNEL_HEADERS)/uapi \
 	-I$(KERNEL_HEADERS)/asm-generic
 
 # Output directory
-BIN_DIR = bin
+BIN_DIR ?= bin
 
 # Source directories
-CPU_SRC = proc-utils-AI/proc-CPUIO
-GPU_SRC = proc-utils-AI/proc-GPUIO
-KERNEL_SRC = proc-utils-AI/nproc-kernel
+CPU_SRC ?= proc-utils-AI/proc-CPUIO
+GPU_SRC ?= proc-utils-AI/proc-GPUIO
+KERNEL_SRC ?= proc-utils-AI/nproc-kernel
 
 # Source files
 CPU_OBJS = $(CPU_SRC)/cpu-buffer-unit.c \

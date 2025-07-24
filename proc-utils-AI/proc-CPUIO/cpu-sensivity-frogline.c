@@ -1,96 +1,109 @@
-#include <linux/module.h>
-#include <linux/kernel.h>
-#include <linux/proc_fs.h>
-#include <linux/seq_file.h>
-#include <linux/sched.h>
-#include <linux/timer.h>
-#include <linux/jiffies.h>
-#include <linux/cpumask.h>
-#include <linux/smp.h>
-#include <linux/kthread.h>
-#include <linux/delay.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <pthread.h>
+#include <unistd.h>
+#include <dirent.h>
 
-#define PROC_NAME "cpu_sensivity_frogline"
 #define CHECK_INTERVAL_MS 2000
 #define CPU_SENSIVITY_THRESHOLD 70
+#define PROC_NAME "./cpu_sensivity_frogline_output.txt"
 
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Zaman Huseyinli");
-MODULE_DESCRIPTION("AI response module based on CPU sensitivity");
-MODULE_VERSION("1.0o1-plugin");
-
-static struct task_struct *monitor_thread;
 static int cpu_over_threshold = 0;
+static pthread_t monitor_thread;
+static int running = 1;
 
-// CPU kullanımını basitçe kontrol eden fonksiyon
-static int check_cpu_usage(void) {
-    unsigned int i, cpu;
-    int total_usage = 0;
+unsigned long long last_total_user, last_total_user_low, last_total_sys, last_total_idle;
 
-    for_each_online_cpu(cpu) {
-        struct kernel_cpustat kcs;
-        cputime64_t user, nice, system, idle;
-        u64 total, busy;
+int get_cpu_usage() {
+    FILE* file;
+    unsigned long long user, nice, system, idle;
+    unsigned long long total_user, total_user_low, total_sys, total_idle;
+    unsigned long long total, total_diff;
+    static int initialized = 0;
 
-        user = kcpustat_cpu(cpu).cpustat[CPUTIME_USER];
-        nice = kcpustat_cpu(cpu).cpustat[CPUTIME_NICE];
-        system = kcpustat_cpu(cpu).cpustat[CPUTIME_SYSTEM];
-        idle = kcpustat_cpu(cpu).cpustat[CPUTIME_IDLE];
+    file = fopen("/proc/stat", "r");
+    if (!file) return -1;
 
-        busy = user + nice + system;
-        total = busy + idle;
+    fscanf(file, "cpu %llu %llu %llu %llu", &user, &nice, &system, &idle);
+    fclose(file);
 
-        if (total == 0) continue;
+    total_user = user;
+    total_user_low = nice;
+    total_sys = system;
+    total_idle = idle;
 
-        total_usage += (busy * 100) / total;
+    if (!initialized) {
+        last_total_user = total_user;
+        last_total_user_low = total_user_low;
+        last_total_sys = total_sys;
+        last_total_idle = total_idle;
+        initialized = 1;
+        return 0;
     }
 
-    return total_usage / num_online_cpus();
+    unsigned long long prev_total = last_total_user + last_total_user_low + last_total_sys + last_total_idle;
+    unsigned long long curr_total = total_user + total_user_low + total_sys + total_idle;
+    total_diff = curr_total - prev_total;
+
+    unsigned long long prev_busy = last_total_user + last_total_user_low + last_total_sys;
+    unsigned long long curr_busy = total_user + total_user_low + total_sys;
+    unsigned long long busy_diff = curr_busy - prev_busy;
+
+    last_total_user = total_user;
+    last_total_user_low = total_user_low;
+    last_total_sys = total_sys;
+    last_total_idle = total_idle;
+
+    if (total_diff == 0) return 0;
+
+    return (int)((busy_diff * 100) / total_diff);
 }
 
-static int monitor_fn(void *data) {
-    while (!kthread_should_stop()) {
-        int usage = check_cpu_usage();
+void* monitor_fn(void* arg) {
+    while (running) {
+        int usage = get_cpu_usage();
         cpu_over_threshold = (usage > CPU_SENSIVITY_THRESHOLD) ? 1 : 0;
-        ssleep(CHECK_INTERVAL_MS / 1000);
+        usleep(CHECK_INTERVAL_MS * 1000);
     }
-    return 0;
+    return NULL;
 }
 
-static int proc_show(struct seq_file *m, void *v) {
+void show_status() {
+    FILE* out = fopen(PROC_NAME, "w");
+    if (!out) return;
+
     if (cpu_over_threshold) {
-        seq_puts(m, "ALERT: CPU threshold exceeded. AI optimization required.\n");
+        fprintf(out, "ALERT: CPU threshold exceeded. AI optimization required.\n");
     } else {
-        seq_puts(m, "NORMAL: CPU usage is within acceptable limits.\n");
+        fprintf(out, "NORMAL: CPU usage is within acceptable limits.\n");
     }
+
+    fclose(out);
+}
+
+int main() {
+    pthread_create(&monitor_thread, NULL, monitor_fn, NULL);
+    printf("[frogline] CPU Sensivity Plugin started. Type 'show' or 'exit'\n");
+
+    char cmd[64];
+    while (1) {
+        printf("Command: ");
+        if (!fgets(cmd, sizeof(cmd), stdin)) break;
+
+        if (strncmp(cmd, "show", 4) == 0) {
+            show_status();
+            system("cat " PROC_NAME);
+        } else if (strncmp(cmd, "exit", 4) == 0) {
+            break;
+        } else {
+            printf("Unknown command.\n");
+        }
+    }
+
+    running = 0;
+    pthread_join(monitor_thread, NULL);
+    remove(PROC_NAME);
+    printf("[frogline] CPU Sensivity Plugin stopped.\n");
     return 0;
 }
-
-static int proc_open(struct inode *inode, struct file *file) {
-    return single_open(file, proc_show, NULL);
-}
-
-static const struct proc_ops proc_file_ops = {
-    .proc_open    = proc_open,
-    .proc_read    = seq_read,
-    .proc_lseek   = seq_lseek,
-    .proc_release = single_release,
-};
-
-static int __init frogline_init(void) {
-    proc_create(PROC_NAME, 0, NULL, &proc_file_ops);
-    monitor_thread = kthread_run(monitor_fn, NULL, "frogline_monitor");
-    printk(KERN_INFO "[frogline] CPU Sensivity Plugin yüklendi.\n");
-    return 0;
-}
-
-static void __exit frogline_exit(void) {
-    if (monitor_thread) {
-        kthread_stop(monitor_thread);
-    }
-    remove_proc_entry(PROC_NAME, NULL);
-    printk(KERN_INFO "[frogline] CPU Sensivity Plugin kaldırıldı.\n");
-}
-
-module_init(frogline_init);
-module_exit(frogline_exit);
