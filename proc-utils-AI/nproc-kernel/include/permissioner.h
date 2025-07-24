@@ -11,8 +11,8 @@ typedef struct {
     
 } PermissionData;
 
-
-extern PermissionData *perm_data;
+extern PermissionData PERMISSION_DATA;
+extern PermissionData  *perm_data;
 extern int groups;
 extern const char *groups_follower;
 extern size_t *allunknownlistbyte;
@@ -30,6 +30,19 @@ void follower_name() {
      groups_follower == GROUPS ? "ADMIN_PERMISSION" : "USER_PERMISSION";
     return groups_follower;
 }
+void set_admin_permission() {
+    if (groups_follower == "ADMIN_PERMISSION") {
+        perm_data->revoke_permission = ACCEPTED_PERMISSION_DATA;
+    } else {
+        perm_data->revoke_permission = REVOKE_PERMISSION_DATA;
+    }
+}
 
-
+void set_user_permission() {
+    if (groups_follower == "USER_PERMISSION") {
+        perm_data->revoke_permission = (int)(size_t)NULLEXCEPTION;
+    } else {
+        perm_data->revoke_permission = REVOKE_PERMISSION_DATA;
+    }
+}
 #endif // PERMISSIONER_H
