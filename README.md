@@ -1,5 +1,6 @@
 # Linux-AI
-![Linux Collaboration AI](https://raw.githubusercontent.com/Zamanhuseyinli/Linux-AI/refs/heads/main/LINUX-AI-LOGO.png)  
+<img src="https://raw.githubusercontent.com/Zamanhuseyinli/Linux-AI/refs/heads/main/LINUX-AI-LOGO.png" alt="Linux Collaboration AI" width="100"/>
+
 
 ## **Linux Artificial Intelligence and Automation Structure**
 
