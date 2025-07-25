@@ -1,14 +1,23 @@
-# Linux-AI
-<img src="https://raw.githubusercontent.com/Zamanhuseyinli/Linux-AI/refs/heads/main/LINUX-AI-LOGO.png" alt="Linux Collaboration AI" width="100"/>
-<!-- Contributors Section -->
-<h2>Contributors</h2>
-<p>
-  <a href="https://github.com/Zamanhuseyinli/Linux-AI/graphs/contributors" target="_blank" rel="noopener noreferrer">
-    <img src="https://img.shields.io/github/contributors/Zamanhuseyinli/Linux-AI?color=green&style=flat-square" alt="Contributors">
+# Linux AI
+<div style="display: flex; align-items: center; gap: 20px;">
+  <!-- Logo -->
+  <a href="https://github.com/Zamanhuseyinli/Linux-AI/releases" target="_blank" rel="noopener noreferrer">
+    <img src="https://raw.githubusercontent.com/Zamanhuseyinli/Linux-AI/refs/heads/main/LINUX-AI-LOGO.png" alt="Linux Collaboration AI" width="100" />
   </a>
-</p>
+
+  <!-- Contributors Badge -->
+  <a href="https://github.com/Zamanhuseyinli/Linux-AI/graphs/contributors" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center;">
+    <img src="https://img.shields.io/github/contributors/Zamanhuseyinli/Linux-AI?color=green&style=flat-square" alt="Contributors" />
+  </a>
+
+  <!-- Issues Badge -->
+  <a href="https://github.com/Zamanhuseyinli/Linux-AI/issues" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center;">
+    <img src="https://img.shields.io/github/issues/Zamanhuseyinli/Linux-AI?color=red&style=flat-square" alt="Issues" />
+  </a>
+</div>
 
 <hr>
+
 
 
 ## **Linux Artificial Intelligence and Automation Structure**
