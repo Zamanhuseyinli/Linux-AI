@@ -1,6 +1,8 @@
 # Linux-AI
 Linux AI Kernel Tools and Automation
 
+![Linux Collaboration AI](https://raw.githubusercontent.com/Zamanhuseyinli/Linux-AI/refs/heads/main/LINUX-AI-LOGO.png)  
+
 ## **Linux Artificial Intelligence and Automation Structure**
 
 This project is based on large language models and a system-level automation framework. It enables users to interact with the system through kernel modules, while the AI layer handles I/O, device, and system components as if it were part of a robotic intelligence structure.
