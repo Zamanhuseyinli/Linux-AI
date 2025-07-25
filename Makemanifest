@@ -1,0 +1,82 @@
+<?MakeManifest version="1.0.0" format_type=multi"?>
+<MakeManifest version="1.0.0" theme="manifestsornamebyter">
+  <!-- Include directive -->
+   
+  <Metadata>
+    <Name>proc-utils-AI</Name>
+    <Version>1.0.0</Version>
+    <Description>AI-based process utilities for CPU and GPU monitoring</Description>
+    <Main>bin/cpu_tools</Main>
+  </Metadata>
+
+  <Scripts>
+    <Build>make all</Build>
+    <Clean>make clean</Clean>
+  </Scripts>
+
+  <Dependencies>
+    <Dependency name="gcc" version=">=4.8"/>
+    <Dependency name="g++" version=">=4.8"/>
+    <Dependency name="make" version=">=3.81"/>
+    <Dependency name="linux-headers" version=">=4.15"/>
+    <Dependency name="libc6-dev" version=">=2.27"/>
+    <Dependency name="libstdc++-dev" version=">=4.8"/>
+    <Dependency name="procps" version=">=3.3.12"/>
+    <Dependency name="libc6" version=">=2.27"/>
+  </Dependencies>
+  
+  <DevDependencies>
+    <DevDependency name="gcc" version=">=4.8"/>
+    <DevDependency name="g++" version=">=4.8"/>
+    <DevDependency name="make" version=">=3.81"/>
+    <DevDependency name="linux-headers" version=">=4.15"/>
+    <DevDependency name="libc6-dev" version=">=2.27"/>
+    <DevDependency name="libstdc++-dev" version=">=4.8"/>
+    <DevDependency name="procps" version=">=3.3.12"/>
+    <DevDependency name="libc6" version=">=2.27"/>
+    <DevDependency name="sorname" version=">=1.0"/>
+  </DevDependencies>
+
+  <UserDefine>
+    <ByteDataSection size="2048" floatboat_encc="no"/>
+  </UserDefine>
+
+  <Defines>
+    <Define name="MAKE_MANIFEST" value="true"/>
+    <Define name="MAKE_MANIFEST_VERSION" value="1.0.0"/>
+    <Define name="CPU_SRC" value="proc-utils-AI/proc-CPUIO"/>
+    <Define name="GPU_SRC" value="proc-utils-AI/proc-GPUIO"/>
+    <Define name="KERNEL_SRC" value="proc-utils-AI/nproc-kernel"/>
+    <Define name="KERNEL_HEADERS" value="/usr/include/"/>
+    <Define name="KERNEL_INCLUDE" value="-I/usr/include/linux -I/usr/include/linux -I/usr/include/uapi -I/usr/include/asm-generic"/>
+  </Defines>
+  <MakeCommands> python setup.py build </MakeCommands>
+  <Theme>manifestsornamebyter</Theme>
+  <Choice prompt="manifest are you make sure?" choice_index="y/n"/>
+
+  <MakeCommands>
+    <Make>
+      gcc -O2 -Wall -I . 
+      proc-utils-AI/proc-CPUIO/cpu-buffer-unit.c 
+      proc-utils-AI/proc-CPUIO/cpufreg-inline.c 
+      proc-utils-AI/proc-CPUIO/cpu_metrics_collector.c 
+      proc-utils-AI/proc-CPUIO/cpu-sensivity-frogline.c 
+      proc-utils-AI/proc-CPUIO/sentielcpu_io_stats.c 
+      -o bin/cpu_tools $(KERNEL_INCLUDE)
+    </Make>
+
+    <Make>
+      g++ -O2 -Wall -I . 
+      proc-utils-AI/proc-GPUIO/gpu-buffer-unit.c 
+      proc-utils-AI/proc-GPUIO/gpu_model_runner.cpp 
+      -o bin/gpu_tools $(KERNEL_INCLUDE)
+    </Make>
+
+    <Make>
+      gcc -O2 -Wall -I . 
+      proc-utils-AI/nproc-kernel/kernel-start.c 
+      -o bin/kernel_mod $(KERNEL_INCLUDE)
+    </Make>
+  </MakeCommands>
+
+</MakeManifest>

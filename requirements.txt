@@ -1,20 +1,9 @@
 pyttsx3
 psutil
-yaml
-watchdog
-json  # Python built-in, genellikle gerekmez
-datetime  # Python built-in
-csv  # Python built-in
-argparse  # Python built-in
-statistics  # Python built-in
-typing  # Python built-in
 matplotlib
 seaborn
 numpy
 torch
 scikit-learn
 pandas
-re  # Python built-in
-random  # Python built-in
-os  # Python built-in
-time  # Python built-in
+
