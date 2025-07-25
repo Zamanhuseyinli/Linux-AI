@@ -1,5 +1,5 @@
 # Linux AI
-<div style="display: flex; align-items: center; gap: 80px;">
+<div style="display: flex; align-items: center; gap: 800px;">
   <!-- Logo -->
   <a href="https://github.com/Zamanhuseyinli/Linux-AI/releases" target="_blank" rel="noopener noreferrer">
     <img src="https://raw.githubusercontent.com/Zamanhuseyinli/Linux-AI/refs/heads/main/LINUX-AI-LOGO.png" alt="Linux Collaboration AI" width="100" />
