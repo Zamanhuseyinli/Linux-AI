@@ -1,7 +1,15 @@
 # Linux-AI
 <img src="https://raw.githubusercontent.com/Zamanhuseyinli/Linux-AI/refs/heads/main/LINUX-AI-LOGO.png" alt="Linux Collaboration AI" width="100"/>
-[![Contributors](https://img.shields.io/github/contributors/Zamanhuseyinli/Linux-AI?color=green&style=flat-square)](https://github.com/Zamanhuseyinli/Linux-AI/graphs/contributors)
-[GitHub Issues](https://github.com/Zamanhuseyinli/Linux-AI/issues)
+<!-- Contributors Section -->
+<h2>Contributors</h2>
+<p>
+  <a href="https://github.com/Zamanhuseyinli/Linux-AI/graphs/contributors" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/github/contributors/Zamanhuseyinli/Linux-AI?color=green&style=flat-square" alt="Contributors">
+  </a>
+</p>
+
+<hr>
+
 
 ## **Linux Artificial Intelligence and Automation Structure**
 
