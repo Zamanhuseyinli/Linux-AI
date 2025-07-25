@@ -1,7 +1,5 @@
 <?MakeManifest version="1.0.0" format_type=multi"?>
 <MakeManifest version="1.0.0" theme="manifestsornamebyter">
-  <!-- Include directive -->
-   
   <Metadata>
     <Name>proc-utils-AI</Name>
     <Version>1.0.0</Version>
