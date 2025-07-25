@@ -1,6 +1,4 @@
 # Linux-AI
-Linux AI Kernel Tools and Automation
-
 ![Linux Collaboration AI](https://raw.githubusercontent.com/Zamanhuseyinli/Linux-AI/refs/heads/main/LINUX-AI-LOGO.png)  
 
 ## **Linux Artificial Intelligence and Automation Structure**
