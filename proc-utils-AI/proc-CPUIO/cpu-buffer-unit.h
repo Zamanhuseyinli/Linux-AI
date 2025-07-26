@@ -3,6 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include <pthread.h>
+#include <stddef.h>
 
 #define DEFAULT_ENTRY_LEN 128
 #define MAX_ENTRIES 512
@@ -77,7 +78,7 @@ void set_buffer_size(int new_size) {
     printf("Buffer size changed to %d\n", buffer_max);
 }
 
-int main() {
+int init_cpu_buffer_unit(void) {
     buffer_entries = calloc(MAX_ENTRIES, sizeof(struct buffer_entry));
     if (!buffer_entries) {
         perror("Allocation failed");

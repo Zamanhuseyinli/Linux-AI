@@ -4,7 +4,7 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <dirent.h>
-
+#include <stddef.h>
 #define CHECK_INTERVAL_MS 2000
 #define CPU_SENSIVITY_THRESHOLD 70
 #define PROC_NAME "./cpu_sensivity_frogline_output.txt"
@@ -82,7 +82,7 @@ void show_status() {
     fclose(out);
 }
 
-int main() {
+int init_cpu_sensivity_frogline(void) {
     pthread_create(&monitor_thread, NULL, monitor_fn, NULL);
     printf("[frogline] CPU Sensivity Plugin started. Type 'show' or 'exit'\n");
 

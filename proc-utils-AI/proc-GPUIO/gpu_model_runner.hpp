@@ -1,3 +1,6 @@
+#ifndef GPU_MODEL_RUNNER_HPP
+#define GPU_MODEL_RUNNER_HPP
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -5,7 +8,9 @@
 #include <cstdlib>
 #include <cstdio>
 
-std::string detect_gpu_vendor() {
+namespace gpu_model_runner {
+
+inline std::string detect_gpu_vendor() {
     std::string vendor = "unknown";
     FILE* pipe = popen("lspci | grep VGA", "r");
     if (!pipe) return vendor;
@@ -24,7 +29,7 @@ std::string detect_gpu_vendor() {
     return vendor;
 }
 
-void read_amd_metrics() {
+inline void read_amd_metrics() {
     std::ifstream file("/sys/class/drm/card0/device/gpu_busy_percent");
     std::ifstream memfile("/sys/class/drm/card0/device/mem_info_vram_used");
 
@@ -48,7 +53,7 @@ void read_amd_metrics() {
     std::cout << "}" << std::endl;
 }
 
-void read_intel_metrics() {
+inline void read_intel_metrics() {
     FILE* pipe = popen("intel_gpu_top -J -s 200 -o - | head -n 20", "r");
     if (!pipe) {
         std::cerr << "Intel GPU monitoring tool not found.\n";
@@ -56,7 +61,7 @@ void read_intel_metrics() {
     }
 
     char buffer[512];
-    std::string output = "";
+    std::string output;
 
     while (fgets(buffer, sizeof(buffer), pipe)) {
         output += buffer;
@@ -69,11 +74,11 @@ void read_intel_metrics() {
     std::cout << "}" << std::endl;
 }
 
-void read_nvidia_metrics() {
+inline void read_nvidia_metrics() {
     std::cerr << "[!] NVIDIA GPU detected but `nvidia-smi` not available or unsupported in this mode.\n";
 }
 
-int main() {
+inline int init_gpu_model_runner() {
     std::string vendor = detect_gpu_vendor();
 
     if (vendor == "amd") {
@@ -88,3 +93,7 @@ int main() {
 
     return 0;
 }
+
+} // namespace gpu_model_runner
+
+#endif // GPU_MODEL_RUNNER_HPP

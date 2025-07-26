@@ -1,7 +1,7 @@
-CC      ?= gcc
-CXX     ?= g++
-CFLAGS  ?= -O2 -Wall -I. -I/usr/include
-CXXFLAGS?= -O2 -Wall -I. -I/usr/include
+CC       ?= gcc
+CXX      ?= g++
+CFLAGS   ?= -O2 -Wall -I. -I/usr/include
+CXXFLAGS ?= -O2 -Wall -I. -I/usr/include
 
 BIN_DIR     := bin
 CPU_SRC     := proc-utils-AI/proc-CPUIO
@@ -24,16 +24,16 @@ KERNEL_OBJS := $(KERNEL_SRC)/kernel-start.c
 all: $(BIN_DIR) $(BIN_DIR)/cpu_tools $(BIN_DIR)/gpu_tools $(BIN_DIR)/kernel_mod
 
 $(BIN_DIR):
-    @mkdir -p $(BIN_DIR)
+	@mkdir -p $(BIN_DIR)
 
 $(BIN_DIR)/cpu_tools: $(CPU_OBJS)
-    $(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^
 
 $(BIN_DIR)/gpu_tools: $(GPU_OBJS)
-    $(CXX) $(CXXFLAGS) -o $@ $^
+	$(CXX) $(CXXFLAGS) -o $@ $^
 
 $(BIN_DIR)/kernel_mod: $(KERNEL_OBJS)
-    $(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^
 
 clean:
-    rm -rf $(BIN_DIR)
+	rm -rf $(BIN_DIR) *.o

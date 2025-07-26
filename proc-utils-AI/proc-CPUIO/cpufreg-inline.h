@@ -13,7 +13,7 @@
 #define MAX_CPUS 128
 #define BUF_SIZE 128
 
-static volatile int running = 1;
+static volatile int runner = 1;
 static volatile int turbo_enabled = 0;
 static char current_policy[BUF_SIZE] = "ondemand";
 
@@ -39,7 +39,9 @@ void set_governor_all(const char *governor) {
         }
     }
     printf("[cpu_manager] Governor set to %s on all CPUs\n", governor);
-    strncpy(current_policy, governor, BUF_SIZE);
+    strncpy(current_policy, governor, BUF_SIZE - 1);
+    current_policy[BUF_SIZE - 1] = '\0';
+
 }
 
 void set_turbo(int enable) {
@@ -62,7 +64,7 @@ void set_turbo(int enable) {
 }
 
 void *manager_thread(void *arg) {
-    while (running) {
+    while (runner) {
         // Burada AI logic'i yerleştirilebilir:
         // Örnek: CPU yüküne göre governor veya turbo ayarlarını değiştir.
 
@@ -72,7 +74,7 @@ void *manager_thread(void *arg) {
     return NULL;
 }
 
-int main() {
+int init_cpufreg_inline(void) {
     pthread_t thread_id;
     char input[BUF_SIZE];
 
@@ -81,7 +83,7 @@ int main() {
 
     pthread_create(&thread_id, NULL, manager_thread, NULL);
 
-    while (running) {
+    while (runner) {
         printf("> ");
         fflush(stdout);
         if (!fgets(input, sizeof(input), stdin))
@@ -96,7 +98,7 @@ int main() {
         } else if (strncmp(input, "policy:", 7) == 0) {
             set_governor_all(input + 7);
         } else if (strcmp(input, "exit") == 0) {
-            running = 0;
+            runner = 0;
         } else {
             printf("Unknown command\n");
         }

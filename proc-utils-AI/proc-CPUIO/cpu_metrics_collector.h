@@ -6,14 +6,14 @@
 #define MAX_BUF 256
 
 typedef struct {
-    float cpu_usage;
+    float cpu_using;
     int cpu_freq_mhz;
     int cpu_temp_celsius;
     char policy[64];
     int turbo_enabled;
 } cpu_metrics_t;
 
-float get_cpu_usage() {
+float get_cpu_using() {
     FILE* fp;
     char buf[MAX_BUF];
     unsigned long long int user, nice, system, idle;
@@ -101,7 +101,7 @@ int is_turbo_enabled() {
 
 void print_metrics(cpu_metrics_t* metrics) {
     printf("{\n");
-    printf("  \"cpu_usage\": %.2f,\n", metrics->cpu_usage);
+    printf("  \"cpu_usage\": %.2f,\n", metrics->cpu_using);
     printf("  \"cpu_freq_mhz\": %d,\n", metrics->cpu_freq_mhz);
     printf("  \"cpu_temp_celsius\": %d,\n", metrics->cpu_temp_celsius);
     printf("  \"policy\": \"%s\",\n", metrics->policy);
@@ -109,11 +109,11 @@ void print_metrics(cpu_metrics_t* metrics) {
     printf("}\n");
 }
 
-int main() {
+int init_cpu_metrics_collector(void){
     cpu_metrics_t metrics;
 
     sleep(1); // İlk ölçüm öncesi CPU usage stabilitesini sağla
-    metrics.cpu_usage = get_cpu_usage();
+    metrics.cpu_using = get_cpu_using();
     metrics.cpu_freq_mhz = get_cpu_freq();
     metrics.cpu_temp_celsius = get_cpu_temp();
     get_current_policy(metrics.policy);
