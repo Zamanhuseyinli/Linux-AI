@@ -47,25 +47,22 @@
   </Defines>
 
   <MakeCommands>
-    <!-- Öncelikle bin dizinini oluştur -->
     <Make>mkdir -p bin</Make>
 
-    <!-- CPU araçlarını derle -->
     <Make>
       gcc -O2 -Wall -I proc-utils-AI/proc-CPUIO proc-utils-AI/proc-CPUIO/proc-CPUIO.c -o bin/Kernel-AI-cpud
     </Make>
 
-    <!-- GPU araçlarını derle -->
+    
     <Make>
       g++ -O2 -Wall -I proc-utils-AI/proc-GPUIO proc-utils-AI/proc-GPUIO/proc-GPUIO.cpp -o bin/kernel-AI-gpud
     </Make>
 
-    <!-- Permission revoke aracı -->
+   
     <Make>
       gcc -O2 -Wall -I proc-utils-AI/nproc-kernel proc-utils-AI/nproc-kernel/grant_permission_revoke.c -o bin/kernel-AI-gpm
     </Make>
 
-    <!-- Kernel modülünü derle -->
     <Make>
       gcc -O2 -Wall -I proc-utils-AI/nproc-kernel proc-utils-AI/nproc-kernel/kernel-start.c -o bin/kernel-AI-start
     </Make>
