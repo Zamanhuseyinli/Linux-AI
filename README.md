@@ -39,13 +39,6 @@ Supported hardware currently includes Intel, AMD, and other integrated GPU and C
 
 ---
 
-> ⚠️ **Warning:**  
-> This is an experimental prototype.  
-> It is **highly recommended** to install and test it in a virtual machine first.  
-> Unexpected behavior may occur on physical devices.
-
----
-
 ## DE-AI
 
 DE-AI is an AI management system designed specifically for desktop environments, providing limited AI support tailored to desktop use cases. It differs from Linux Kernel-AI, which offers full kernel-level AI control.
@@ -116,7 +109,8 @@ Specify user privilege level during build (e.g., `Kernel-AI ADMIN`).
 
 ---
 
-{{Warning|Kernel-AI is under active development. Test in virtual machines. Maintainers are not responsible for misuse or illegal activities. Limited NVIDIA-SMI support. Report issues at [GitHub Issues](https://github.com/Zamanhuseyinli/Linux-AI/issues).}}
+> ⚠️ **Warning:**  
+> Kernel-AI is under active development. It is strongly recommended to test it within a virtual machine first. The maintainers are not responsible for any misuse or illegal activity. Limited support for NVIDIA-SMI hardware is available. Report issues and request features on [GitHub Issues](https://github.com/Zamanhuseyinli/Linux-AI/issues).
 
 ---
 
