@@ -1,31 +1,19 @@
-# CMake minimum required version
 cmake_minimum_required(VERSION 3.10)
+project(proc_utils_AI)
 
-# Project name and version
-project(LinuxAI VERSION 1.0)
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_CXX_STANDARD 17)
 
-# Compiler settings
-set(CMAKE_C_COMPILER gcc)
-set(CMAKE_CXX_COMPILER g++)
+# Ortak derleyici bayrakları
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2 -Wall -I. -I/usr/include")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -Wall -I. -I/usr/include")
 
-# Compiler flags
-set(CMAKE_C_FLAGS "-O2 -Wall -I. -I/usr/include")
-set(CMAKE_CXX_FLAGS "-O2 -Wall -I.")
+# Kaynak dizinleri
+set(CPU_SRC     ${CMAKE_SOURCE_DIR}/proc-utils-AI/proc-CPUIO)
+set(GPU_SRC     ${CMAKE_SOURCE_DIR}/proc-utils-AI/proc-GPUIO)
+set(KERNEL_SRC  ${CMAKE_SOURCE_DIR}/proc-utils-AI/nproc-kernel)
 
-# Kernel headers location
-set(KERNEL_HEADERS "/lib/modules/${CMAKE_SYSTEM_NAME}/build")
-include_directories(${KERNEL_HEADERS}/include)
-
-# Output directory for binaries
-set(BIN_DIR ${CMAKE_BINARY_DIR}/bin)
-file(MAKE_DIRECTORY ${BIN_DIR})
-
-# Source directories
-set(CPU_SRC proc-utils-AI/proc-CPUIO)
-set(GPU_SRC proc-utils-AI/proc-GPUIO)
-set(KERNEL_SRC proc-utils-AI/nproc-kernel)
-
-# Sources
+# CPU araç kaynakları
 set(CPU_OBJS
     ${CPU_SRC}/cpu-buffer-unit.c
     ${CPU_SRC}/cpufreg-inline.c
@@ -34,31 +22,29 @@ set(CPU_OBJS
     ${CPU_SRC}/sentielcpu_io_stats.c
 )
 
+# GPU araç kaynakları
 set(GPU_OBJS
     ${GPU_SRC}/gpu-buffer-unit.c
     ${GPU_SRC}/gpu_model_runner.cpp
 )
 
+# Kernel modülü kaynakları
 set(KERNEL_OBJS
     ${KERNEL_SRC}/kernel-start.c
 )
 
-# Create executable targets
+# Çıktı klasörü
+set(BIN_DIR ${CMAKE_BINARY_DIR}/bin)
+file(MAKE_DIRECTORY ${BIN_DIR})
+
+# CPU binary
 add_executable(cpu_tools ${CPU_OBJS})
+set_target_properties(cpu_tools PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
+
+# GPU binary
 add_executable(gpu_tools ${GPU_OBJS})
+set_target_properties(gpu_tools PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
+
+# Kernel binary
 add_executable(kernel_mod ${KERNEL_OBJS})
-
-# Set the output directory for executables
-set_target_properties(cpu_tools gpu_tools kernel_mod PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR}
-)
-
-# Link the kernel include directory
-target_include_directories(cpu_tools PRIVATE ${KERNEL_HEADERS}/include)
-target_include_directories(gpu_tools PRIVATE ${KERNEL_HEADERS}/include)
-target_include_directories(kernel_mod PRIVATE ${KERNEL_HEADERS}/include)
-
-# Clean command to remove the binaries
-add_custom_target(clean
-    COMMAND ${CMAKE_COMMAND} -E remove_directory ${BIN_DIR}
-)
+set_target_properties(kernel_mod PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
